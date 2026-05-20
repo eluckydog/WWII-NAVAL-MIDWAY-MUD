@@ -1,9 +1,13 @@
 # Midway North Night Battle — Arleigh Burke Trainer
 
+[**中文**](README.md) · [**日本語**](README.jp.md)
+
 > **02:00, June 5, 1942 | 30°N 178°E | Overcast, moonless night**
 
-> **World's first game logic engine prototype — developed entirely by AI agents**
-> Current build: MUD prototype. A gaming experience unlike any other.
+> **AI-native MUD game logic engine prototype**
+> The engine layer is architected for AI agent control: AI handles battlefield awareness, tactical decisions, and action execution
+> Current build: MUD interaction prototype — you command, AI captains and engine execute
+> A gaming experience unlike any other.
 
 ---
 
