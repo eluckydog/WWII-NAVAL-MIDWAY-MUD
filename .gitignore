@@ -4,3 +4,6 @@ __pycache__/
 *.pyd
 .DS_Store
 Thumbs.db
+*.bundle
+_postmortem.md
+monte_cairo/
