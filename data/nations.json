@@ -1,0 +1,32 @@
+{
+  "nations": {
+    "日本": {
+      "short": "IJN",
+      "color": "red",
+      "description": "大日本帝国海军",
+      "fleet_trait": "夜战优势",
+      "trait_desc": "夜战命中率+20%"
+    },
+    "美国": {
+      "short": "USN",
+      "color": "blue",
+      "description": "美国海军",
+      "fleet_trait": "工业修复",
+      "trait_desc": "停泊港口时修复速度+30%"
+    },
+    "德国": {
+      "short": "KM",
+      "color": "grey",
+      "description": "德国海军",
+      "fleet_trait": "狼群战术",
+      "trait_desc": "潜艇隐蔽+25%"
+    },
+    "英国": {
+      "short": "RN",
+      "color": "darkblue",
+      "description": "皇家海军",
+      "fleet_trait": "雷达制导",
+      "trait_desc": "索敌范围+30%"
+    }
+  }
+}

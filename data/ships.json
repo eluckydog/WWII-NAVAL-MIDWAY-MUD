@@ -1,0 +1,187 @@
+{
+  "ship_classes": {
+    "battleship": {
+      "name": "战列舰",
+      "description": "海上巨无霸，厚重的装甲和巨炮",
+      "health_mult": 5.0,
+      "armor_mult": 4.0,
+      "speed_base": 15,
+      "firepower_base": 100,
+      "crew_base": 1500,
+      "range_nm": 8000
+    },
+    "battlecruiser": {
+      "name": "战列巡洋舰",
+      "description": "巡洋舰的速度，战列舰的火炮",
+      "health_mult": 3.5,
+      "armor_mult": 2.5,
+      "speed_base": 28,
+      "firepower_base": 80,
+      "crew_base": 1000,
+      "range_nm": 10000
+    },
+    "heavy_cruiser": {
+      "name": "重巡洋舰",
+      "description": "多用途主力舰，既可侦察也可编队作战",
+      "health_mult": 2.0,
+      "armor_mult": 1.5,
+      "speed_base": 32,
+      "firepower_base": 50,
+      "crew_base": 800,
+      "range_nm": 10000
+    },
+    "light_cruiser": {
+      "name": "轻巡洋舰",
+      "description": "快速灵活的舰队之眼",
+      "health_mult": 1.2,
+      "armor_mult": 0.8,
+      "speed_base": 35,
+      "firepower_base": 30,
+      "crew_base": 500,
+      "range_nm": 8000
+    },
+    "destroyer": {
+      "name": "驱逐舰",
+      "description": "舰队中的多面手",
+      "health_mult": 0.6,
+      "armor_mult": 0.3,
+      "speed_base": 36,
+      "firepower_base": 15,
+      "crew_base": 250,
+      "range_nm": 5000
+    },
+    "submarine": {
+      "name": "潜艇",
+      "description": "深海猎手，隐蔽致命",
+      "health_mult": 0.4,
+      "armor_mult": 0.2,
+      "speed_base": 18,
+      "firepower_base": 8,
+      "crew_base": 60,
+      "range_nm": 12000,
+      "stealth_bonus": 3.0,
+      "max_depth": 300
+    },
+    "aircraft_carrier": {
+      "name": "航空母舰",
+      "description": "浮动机场，改变了海战格局",
+      "health_mult": 4.0,
+      "armor_mult": 2.0,
+      "speed_base": 32,
+      "firepower_base": 10,
+      "crew_base": 2500,
+      "range_nm": 12000,
+      "air_wing": true,
+      "max_aircraft": 90
+    },
+    "escort_carrier": {
+      "name": "护航航母",
+      "description": "商船改造的轻型航母",
+      "health_mult": 2.0,
+      "armor_mult": 1.0,
+      "speed_base": 18,
+      "firepower_base": 6,
+      "crew_base": 800,
+      "range_nm": 8000,
+      "air_wing": true,
+      "max_aircraft": 30
+    }
+  },
+  "famous_ships": {
+    "yamato": {
+      "name": "大和号",
+      "class": "battleship",
+      "nation": "日本",
+      "displacement": 72000,
+      "year": 1941,
+      "description": "人类史上最大最强的战列舰",
+      "speed": 27,
+      "armor_belt": 410
+    },
+    "iowa": {
+      "name": "衣阿华号",
+      "class": "battleship",
+      "nation": "美国",
+      "displacement": 45000,
+      "year": 1943,
+      "description": "美国海军最快的战列舰",
+      "speed": 33,
+      "armor_belt": 307
+    },
+    "bismarck": {
+      "name": "俾斯麦号",
+      "class": "battleship",
+      "nation": "德国",
+      "displacement": 41700,
+      "year": 1940,
+      "description": "德国海军的骄傲",
+      "speed": 30,
+      "armor_belt": 320
+    },
+    "enterprise": {
+      "name": "企业号",
+      "class": "aircraft_carrier",
+      "nation": "美国",
+      "displacement": 19800,
+      "year": 1938,
+      "description": "二战功勋航母",
+      "max_aircraft": 90,
+      "speed": 33,
+      "armor_belt": 100,
+      "nickname": "大E"
+    },
+    "shinano": {
+      "name": "信浓号",
+      "class": "aircraft_carrier",
+      "nation": "日本",
+      "displacement": 72000,
+      "year": 1944,
+      "description": "由大和级改造的巨型航母",
+      "max_aircraft": 47,
+      "speed": 27,
+      "armor_belt": 400
+    },
+    "prinz_eugen": {
+      "name": "欧根亲王号",
+      "class": "heavy_cruiser",
+      "nation": "德国",
+      "displacement": 16300,
+      "year": 1940,
+      "description": "希佩尔级重巡",
+      "speed": 32,
+      "armor_belt": 80
+    },
+    "yorktown": {
+      "name": "约克城号",
+      "class": "aircraft_carrier",
+      "nation": "美国",
+      "displacement": 19800,
+      "year": 1937,
+      "description": "约克城级首舰",
+      "max_aircraft": 90,
+      "speed": 33,
+      "armor_belt": 100
+    },
+    "nagato": {
+      "name": "长门号",
+      "class": "battleship",
+      "nation": "日本",
+      "displacement": 39130,
+      "year": 1920,
+      "description": "日本海军旗舰",
+      "speed": 25,
+      "armor_belt": 305
+    },
+    "u47": {
+      "name": "U-47",
+      "class": "submarine",
+      "nation": "德国",
+      "displacement": 769,
+      "year": 1938,
+      "description": "普里恩指挥的著名潜艇",
+      "speed_surface": 17,
+      "speed_submerged": 8,
+      "max_depth": 220
+    }
+  }
+}

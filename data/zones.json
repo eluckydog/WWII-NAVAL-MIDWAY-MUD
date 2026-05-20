@@ -1,0 +1,298 @@
+{
+  "zones": {
+    "珍珠港": {
+      "type": "port",
+      "nation": "美国",
+      "description": "美国太平洋舰队母港",
+      "connections": [
+        "北太平洋",
+        "中途岛"
+      ]
+    },
+    "中途岛": {
+      "type": "atoll",
+      "nation": "美国",
+      "description": "太平洋中部的战略要冲",
+      "connections": [
+        "珍珠港",
+        "北太平洋",
+        "西太平洋"
+      ]
+    },
+    "北太平洋": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "辽阔的北太平洋",
+      "connections": [
+        "珍珠港",
+        "中途岛",
+        "日本近海"
+      ]
+    },
+    "西太平洋": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "菲律宾海周边，航母决战之地",
+      "connections": [
+        "中途岛",
+        "日本近海",
+        "菲律宾",
+        "莱特湾"
+      ]
+    },
+    "日本近海": {
+      "type": "sea",
+      "nation": "日本",
+      "description": "日本本土周边海域",
+      "connections": [
+        "北太平洋",
+        "西太平洋",
+        "东京港",
+        "濑户内海"
+      ]
+    },
+    "东京港": {
+      "type": "port",
+      "nation": "日本",
+      "description": "日本最大的港口",
+      "connections": [
+        "日本近海"
+      ]
+    },
+    "濑户内海": {
+      "type": "sea",
+      "nation": "日本",
+      "description": "平静的内海",
+      "connections": [
+        "日本近海",
+        "吴港"
+      ]
+    },
+    "吴港": {
+      "type": "port",
+      "nation": "日本",
+      "description": "日本海军最大的军港",
+      "connections": [
+        "濑户内海"
+      ]
+    },
+    "菲律宾": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "菲律宾群岛周边",
+      "connections": [
+        "西太平洋",
+        "莱特湾",
+        "南太平洋"
+      ]
+    },
+    "莱特湾": {
+      "type": "sea",
+      "nation": "菲律宾",
+      "description": "人类史上最大海战之地",
+      "connections": [
+        "西太平洋",
+        "菲律宾"
+      ]
+    },
+    "南太平洋": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "所罗门群岛、珊瑚海",
+      "connections": [
+        "菲律宾",
+        "珊瑚海",
+        "瓜达尔卡纳尔"
+      ]
+    },
+    "珊瑚海": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "首场航母对决的海域",
+      "connections": [
+        "南太平洋",
+        "澳大利亚"
+      ]
+    },
+    "瓜达尔卡纳尔": {
+      "type": "island",
+      "nation": "国际",
+      "description": "持续半年的血腥争夺战",
+      "connections": [
+        "南太平洋"
+      ]
+    },
+    "澳大利亚": {
+      "type": "port",
+      "nation": "英国",
+      "description": "盟军在南太平洋的最后堡垒",
+      "connections": [
+        "珊瑚海",
+        "印度洋"
+      ]
+    },
+    "印度洋": {
+      "type": "sea",
+      "nation": "英国",
+      "description": "通往中东的海上生命线",
+      "connections": [
+        "澳大利亚",
+        "新加坡",
+        "锡兰"
+      ]
+    },
+    "新加坡": {
+      "type": "port",
+      "nation": "英国",
+      "description": "大英帝国在远东的堡垒",
+      "connections": [
+        "印度洋",
+        "南中国海"
+      ]
+    },
+    "南中国海": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "连接太平洋和印度洋",
+      "connections": [
+        "新加坡",
+        "西太平洋",
+        "菲律宾"
+      ]
+    },
+    "锡兰": {
+      "type": "port",
+      "nation": "英国",
+      "description": "印度洋上的明珠",
+      "connections": [
+        "印度洋"
+      ]
+    },
+    "北大西洋": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "商船和潜艇的绞肉机",
+      "connections": [
+        "斯卡帕湾",
+        "挪威海",
+        "比斯开湾",
+        "美国东海岸"
+      ]
+    },
+    "斯卡帕湾": {
+      "type": "port",
+      "nation": "英国",
+      "description": "皇家海军本土舰队母港",
+      "connections": [
+        "北大西洋",
+        "挪威海"
+      ]
+    },
+    "挪威海": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "北极圈附近的冰冷海域",
+      "connections": [
+        "斯卡帕湾",
+        "北大西洋",
+        "挪威峡湾"
+      ]
+    },
+    "挪威峡湾": {
+      "type": "sea",
+      "nation": "德国",
+      "description": "德国主力舰的天然庇护所",
+      "connections": [
+        "挪威海",
+        "纳尔维克"
+      ]
+    },
+    "纳尔维克": {
+      "type": "port",
+      "nation": "德国",
+      "description": "铁矿石运输的终点",
+      "connections": [
+        "挪威峡湾"
+      ]
+    },
+    "比斯开湾": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "U艇进出大西洋的必经之路",
+      "connections": [
+        "北大西洋",
+        "法国西海岸",
+        "直布罗陀"
+      ]
+    },
+    "法国西海岸": {
+      "type": "port",
+      "nation": "德国",
+      "description": "德国U艇部队的主要基地群",
+      "connections": [
+        "比斯开湾",
+        "圣纳泽尔"
+      ]
+    },
+    "圣纳泽尔": {
+      "type": "port",
+      "nation": "德国",
+      "description": "德国在大西洋最大的潜艇基地",
+      "connections": [
+        "法国西海岸"
+      ]
+    },
+    "直布罗陀": {
+      "type": "port",
+      "nation": "英国",
+      "description": "扼守地中海咽喉",
+      "connections": [
+        "比斯开湾",
+        "地中海"
+      ]
+    },
+    "地中海": {
+      "type": "sea",
+      "nation": "国际",
+      "description": "轴心国与同盟国争夺的古老海域",
+      "connections": [
+        "直布罗陀",
+        "马耳他",
+        "塔兰托"
+      ]
+    },
+    "马耳他": {
+      "type": "island",
+      "nation": "英国",
+      "description": "地中海中部的要塞岛屿",
+      "connections": [
+        "地中海"
+      ]
+    },
+    "塔兰托": {
+      "type": "port",
+      "nation": "意大利",
+      "description": "意大利海军主要基地",
+      "connections": [
+        "地中海"
+      ]
+    },
+    "美国东海岸": {
+      "type": "port",
+      "nation": "美国",
+      "description": "大西洋运输的起点",
+      "connections": [
+        "北大西洋",
+        "诺福克"
+      ]
+    },
+    "诺福克": {
+      "type": "port",
+      "nation": "美国",
+      "description": "美国大西洋舰队主要基地",
+      "connections": [
+        "美国东海岸"
+      ]
+    }
+  }
+}

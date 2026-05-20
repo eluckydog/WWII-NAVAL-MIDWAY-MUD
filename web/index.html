@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>二战舰海录 - WWII SHIP MUD</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <h1>[anch] 二战舰海录</h1>
+    <span class="subtitle">WWII SHIP MUD</span>
+    <div id="connection-status">未连接</div>
+  </div>
+  <div id="terminal" class="terminal">
+    <div class="welcome-msg">
+<pre>
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+|   WWII SHIP MUD - 二战舰海录           |
+|   在文字中航行，书写你的海战传奇       |
+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=
+
+连接服务器以开始游戏...
+</pre>
+    </div>
+    <div id="output"></div>
+  </div>
+  <div id="input-area">
+    <span id="prompt">&gt;</span>
+    <input type="text" id="command-input" placeholder="输入命令..." autofocus>
+    <button id="send-btn">发送</button>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

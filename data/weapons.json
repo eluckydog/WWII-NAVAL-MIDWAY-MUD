@@ -1,0 +1,129 @@
+{
+  "main_guns": {
+    "460mm_45": {
+      "name": "460mm/45九四式",
+      "caliber": 460,
+      "range_km": 42,
+      "damage": 150,
+      "penetration": 95,
+      "rof": 1.5,
+      "nation": "日本"
+    },
+    "406mm_50": {
+      "name": "406mm/50 Mark 7",
+      "caliber": 406,
+      "range_km": 38,
+      "damage": 120,
+      "penetration": 85,
+      "rof": 2.0,
+      "nation": "美国"
+    },
+    "380mm_52": {
+      "name": "380mm/52 SK C/34",
+      "caliber": 380,
+      "range_km": 36,
+      "damage": 105,
+      "penetration": 80,
+      "rof": 2.3,
+      "nation": "德国"
+    },
+    "203mm_60": {
+      "name": "203mm/60 SK C/34",
+      "caliber": 203,
+      "range_km": 27,
+      "damage": 45,
+      "penetration": 35,
+      "rof": 4.0,
+      "nation": "德国"
+    },
+    "203mm_55": {
+      "name": "203mm/55 Mark 12",
+      "caliber": 203,
+      "range_km": 28,
+      "damage": 42,
+      "penetration": 33,
+      "rof": 4.0,
+      "nation": "美国"
+    }
+  },
+  "torpedoes": {
+    "type93": {
+      "name": "九三式氧气鱼雷",
+      "range_km": 40,
+      "damage": 80,
+      "speed_knots": 48,
+      "warhead_kg": 490,
+      "nation": "日本"
+    },
+    "mark15": {
+      "name": "Mark 15",
+      "range_km": 13,
+      "damage": 65,
+      "speed_knots": 45,
+      "warhead_kg": 375,
+      "nation": "美国"
+    },
+    "g7a": {
+      "name": "G7a T1",
+      "range_km": 14,
+      "damage": 70,
+      "speed_knots": 44,
+      "warhead_kg": 400,
+      "nation": "德国"
+    },
+    "g7e": {
+      "name": "G7e T3电动鱼雷",
+      "range_km": 7,
+      "damage": 70,
+      "speed_knots": 30,
+      "warhead_kg": 400,
+      "nation": "德国"
+    }
+  },
+  "aircraft": {
+    "zero": {
+      "name": "A6M零式",
+      "type": "fighter",
+      "speed": 533,
+      "range_km": 1920,
+      "nation": "日本"
+    },
+    "hellcat": {
+      "name": "F6F地狱猫",
+      "type": "fighter",
+      "speed": 610,
+      "range_km": 1520,
+      "nation": "美国"
+    },
+    "val": {
+      "name": "D3A九九式",
+      "type": "dive_bomber",
+      "speed": 430,
+      "range_km": 1470,
+      "bomb_kg": 250,
+      "nation": "日本"
+    },
+    "dauntless": {
+      "name": "SBD无畏式",
+      "type": "dive_bomber",
+      "speed": 410,
+      "range_km": 1240,
+      "bomb_kg": 454,
+      "nation": "美国"
+    },
+    "kate": {
+      "name": "B5N九七式",
+      "type": "torpedo_bomber",
+      "speed": 365,
+      "range_km": 1990,
+      "nation": "日本"
+    },
+    "avenger": {
+      "name": "TBF复仇者",
+      "type": "torpedo_bomber",
+      "speed": 440,
+      "range_km": 1770,
+      "nation": "美国"
+    }
+  }
+}
