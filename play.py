@@ -528,34 +528,24 @@ class Game(bt.Battle):
         self._prev_speed = self.player_ship["speed_kt"]
         # Pre-battle MC: roll Yukikaze buffs
         self._pre_battle_mc_done = False
+        # After-action report stats accumulator
+        self.battle_stats = {
+            "shots_fired": {},       # {shooter: {target: count}}
+            "hits_scored": {},        # {shooter: {target: count}}
+            "near_misses": {},        # {shooter: {target: count}}
+            "torpedo_hits": {},        # [(shooter, target, dmg)]
+            "magazine_hits": [],       # [(target)]
+            "sink_events": [],         # [(ship_name, turn, time)]
+            "fire_events": [],         # [(ship_name)]
+            "ship_hp_start": {},       # {ship_name: max_hp}
+            "ship_hp_end": {},         # {ship_name: hp}
+        }
+        for s in self.all_ships:
+            nm = s.get("name", "?")
+            self.battle_stats["ship_hp_start"][nm] = s["hp"]
 
     def set_lang(self, text):
         self.cn = has_chinese(text)
-
-    def set_mode(self, hard):
-        self._hardcore = hard
-
-    def run_tick(self):
-        self.tc += 1
-        self.turn += 1
-        self.time_minutes += 3
-        ev = []
-        # First turn: pre-battle MC check
-        if self.turn == 1:
-            mc_lines = self.pre_battle_mc()
-            if mc_lines:
-                ev.extend(mc_lines)
-        ev.extend(self.radar_phase())
-        ev.extend(self.detection_phase())
-        for s in self.active_ships():
-            self.move_ship(s)
-        ev.extend(self.torpedo_launch_phase())
-        ev.extend(self.torpedo_phase())
-        ev.extend(self.gunnery_phase())
-        ev.extend(self.secondary_gunnery_phase())
-        ev.extend(self.damage_progression())
-        ev.extend(self.sink_check())
-        return ev
 
     def pre_battle_mc(self):
         """Pre-battle Monte Carlo: roll Yukikaze buffs and announce."""
@@ -592,6 +582,274 @@ class Game(bt.Battle):
         lines.append("    [战场态势确认完毕]" if cn else "    [Battle space confirmed]")
         return lines
 
+    def set_mode(self, hard):
+        self._hardcore = hard
+
+    def run_tick(self):
+        self.tc += 1
+        self.turn += 1
+        self.time_minutes += 3
+        ev = []
+        # First turn: pre-battle MC check
+        if self.turn == 1:
+            mc_lines = self.pre_battle_mc()
+            if mc_lines:
+                ev.extend(mc_lines)
+        ev.extend(self.radar_phase())
+        ev.extend(self.detection_phase())
+        for s in self.active_ships():
+            self.move_ship(s)
+        ev.extend(self.torpedo_launch_phase())
+        ev.extend(self.torpedo_phase())
+        ev.extend(self.gunnery_phase())
+        ev.extend(self.secondary_gunnery_phase())
+        ev.extend(self.damage_progression())
+        ev.extend(self.sink_check())
+        self._accumulate_stats(ev)
+        return ev
+
+    def _accumulate_stats(self, events):
+        """Parse battle events and update battle_stats."""
+        for e in events:
+            if not isinstance(e, dict) or "phase" not in e:
+                continue
+            phase = e.get("phase", "")
+            etype = e.get("type", "")
+            ship = e.get("ship", e.get("shooter", ""))
+            target = e.get("target", "")
+
+            if phase == "sink":
+                self.battle_stats["sink_events"].append((ship, self.turn, self.time_minutes))
+
+            elif phase == "gunnery" and etype == "shot":
+                desc = e.get("desc", "")
+                if isinstance(desc, dict):
+                    dphase = desc.get("phase", "")
+                    dtype = desc.get("type", "")
+                    if dtype == "hit":
+                        hits = desc.get("hits", 1)
+                        self.battle_stats["shots_fired"].setdefault(ship, {}).setdefault(target, 0)
+                        self.battle_stats["shots_fired"][ship][target] += 1
+                        self.battle_stats["hits_scored"].setdefault(ship, {}).setdefault(target, 0)
+                        self.battle_stats["hits_scored"][ship][target] += hits
+                    elif dtype == "near_miss":
+                        self.battle_stats["near_misses"].setdefault(ship, {}).setdefault(target, 0)
+                        self.battle_stats["near_misses"][ship][target] += 1
+                    elif dtype in ("miss",):
+                        self.battle_stats["shots_fired"].setdefault(ship, {}).setdefault(target, 0)
+                        self.battle_stats["shots_fired"][ship][target] += 1
+
+            elif phase == "torpedo_hit":
+                dmg = e.get("dmg", 0)
+                self.battle_stats["torpedo_hits"].append((e.get("shooter", "?"), target, dmg))
+
+            elif phase == "fire":
+                self.battle_stats["fire_events"].append(ship)
+
+            elif phase == "gunnery" and etype == "effect":
+                effect = e.get("effect", "")
+                if "catastrophe" in str(effect).lower() or "magazine" in str(effect).lower():
+                    self.battle_stats["magazine_hits"].append(target)
+
+    def after_action_report(self):
+        """Generate structured after-action report from accumulated stats."""
+        cn = self.cn
+        lines = []
+        sep = "  " + ("─" * 64) if cn else "  " + ("─" * 64)
+
+        if cn:
+            lines.append(sep)
+            lines.append("  ▌战后分析报告")
+            lines.append("  ▌AFTER ACTION REPORT — Task Force 34")
+            lines.append(sep)
+            lines.append("")
+        else:
+            lines.append(sep)
+            lines.append("  ▌AFTER ACTION REPORT — Task Force 34")
+            lines.append(sep)
+            lines.append("")
+
+        # Final HP snapshot
+        for s in self.all_ships:
+            nm = s.get("name", "?")
+            self.battle_stats["ship_hp_end"][nm] = s["hp"] if not s["sunk"] else 0
+
+        # ── 1. 战损汇总 ──
+        if cn:
+            lines.append("  ■ 战损汇总")
+            lines.append("  " + ("─" * 56))
+        else:
+            lines.append("  ■ CASUALTY SUMMARY")
+            lines.append("  " + ("─" * 56))
+
+        for side_name, side in [("US" if cn else "US", "US"), ("JP" if cn else "JP", "JP")]:
+            label = "美军" if cn and side == "US" else "日军" if cn else side
+            alive = [s for s in self.fleets[side] if not s["sunk"]]
+            sunk = [s for s in self.fleets[side] if s["sunk"]]
+            if cn:
+                lines.append(f"    {label}：{len(alive)}艘存活，{len(sunk)}艘沉没")
+            else:
+                lines.append(f"    {label}: {len(alive)} afloat, {len(sunk)} sunk")
+            if sunk:
+                for s in sunk:
+                    nm = s.get("name", "?")
+                    if cn:
+                        lines.append(f"      ✖ {nm}")
+                    else:
+                        lines.append(f"      ✖ {nm}")
+            if alive:
+                for s in alive:
+                    nm = s.get("name", "?")
+                    hp_pct = s["hp"] / s["max_hp"] * 100 if s["max_hp"] > 0 else 0
+                    bar = _hp_bar(hp_pct, cn)
+                    if cn:
+                        lines.append(f"      {nm:30s}  {bar}  {s['hp']:.0f}/{s['max_hp']:.0f}")
+                    else:
+                        lines.append(f"      {nm:30s}  {bar}  {s['hp']:.0f}/{s['max_hp']:.0f}")
+
+        lines.append("")
+
+        # ── 2. 命中统计 ──
+        if cn:
+            lines.append("  ■ 命中统计")
+            lines.append("  " + ("─" * 56))
+        else:
+            lines.append("  ■ HIT STATISTICS")
+            lines.append("  " + ("─" * 56))
+
+        all_shooters = set(list(self.battle_stats["shots_fired"].keys()) + list(self.battle_stats["hits_scored"].keys()))
+        if all_shooters:
+            for shooter in sorted(all_shooters):
+                sf = self.battle_stats["shots_fired"].get(shooter, {})
+                hs = self.battle_stats["hits_scored"].get(shooter, {})
+                all_targets = set(list(sf.keys()) + list(hs.keys()))
+                total_sf = sum(sf.values())
+                total_hs = sum(hs.values())
+                hit_pct = (total_hs / total_sf * 100) if total_sf > 0 else 0
+                if cn:
+                    lines.append(f"    {shooter}")
+                else:
+                    lines.append(f"    {shooter}")
+                for tgt in sorted(all_targets):
+                    s = sf.get(tgt, 0)
+                    h = hs.get(tgt, 0)
+                    if cn:
+                        lines.append(f"      → {tgt:30s}  射击{s}次  命中{h}发  命中率{(h/s*100) if s>0 else 0:.0f}%")
+                    else:
+                        lines.append(f"      → {tgt:30s}  {s} shots  {h} hits  {(h/s*100) if s>0 else 0:.0f}%")
+                if cn:
+                    lines.append(f"      合计射击{total_sf}次  命中{total_hs}发  总命中率{hit_pct:.1f}%")
+                else:
+                    lines.append(f"      Total: {total_sf} shots, {total_hs} hits, {hit_pct:.1f}%")
+                lines.append("")
+        else:
+            lines.append("    " + ("无炮击记录" if cn else "No gunnery data"))
+            lines.append("")
+
+        # ── 3. 命中率总表 ──
+        if cn:
+            lines.append("  ■ 命中率总表")
+            lines.append("  " + ("─" * 56))
+        else:
+            lines.append("  ■ HIT RATE SUMMARY")
+            lines.append("  " + ("─" * 56))
+
+        by_side = {"US": [], "JP": []}
+        for shooter in all_shooters:
+            ship_obj = None
+            for s in self.all_ships:
+                if s.get("name") == shooter:
+                    ship_obj = s
+                    break
+            side = ship_obj["side"] if ship_obj else "?"
+            sf = sum(self.battle_stats["shots_fired"].get(shooter, {}).values())
+            hs = sum(self.battle_stats["hits_scored"].get(shooter, {}).values())
+            nm_short = shooter.split("(")[0].strip() if "(" in shooter else shooter.split()[0] if " " in shooter else shooter
+            pct = (hs / sf * 100) if sf > 0 else 0
+            by_side.setdefault(side, []).append((nm_short, sf, hs, pct))
+
+        for side, label in [("US", "美军" if cn else "US"), ("JP", "日军" if cn else "JP")]:
+            entries = by_side.get(side, [])
+            if not entries:
+                continue
+            if cn:
+                lines.append(f"    {label}：")
+            else:
+                lines.append(f"    {label}:")
+            for nm, sf, hs, pct in entries:
+                bar = _hp_bar(pct, cn, 20)
+                if cn:
+                    lines.append(f"      {nm:24s}  {bar}  {hs}/{sf}  ({pct:.0f}%)")
+                else:
+                    lines.append(f"      {nm:24s}  {bar}  {hs}/{sf}  ({pct:.0f}%)")
+        lines.append("")
+
+        # ── 4. 关键事件 ──
+        if cn:
+            lines.append("  ■ 关键事件")
+            lines.append("  " + ("─" * 56))
+        else:
+            lines.append("  ■ CRITICAL EVENTS")
+            lines.append("  " + ("─" * 56))
+
+        has_events = False
+
+        if self.battle_stats["sink_events"]:
+            has_events = True
+            if cn:
+                lines.append("    📌 沉没：")
+            else:
+                lines.append("    📌 SUNK:")
+            for ship_nm, turn, t in self.battle_stats["sink_events"]:
+                if cn:
+                    lines.append(f"      {ship_nm}  (第{turn}回合, T+{t}min)")
+                else:
+                    lines.append(f"      {ship_nm}  (Turn {turn}, T+{t}min)")
+
+        if self.battle_stats["magazine_hits"]:
+            has_events = True
+            if cn:
+                lines.append("    💥 弹药库命中：")
+            else:
+                lines.append("    💥 MAGAZINE HITS:")
+            for tgt in set(self.battle_stats["magazine_hits"]):
+                lines.append(f"      {tgt}")
+
+        if self.battle_stats["torpedo_hits"]:
+            has_events = True
+            if cn:
+                lines.append("    🎯 鱼雷命中：")
+            else:
+                lines.append("    🎯 TORPEDO HITS:")
+            for shooter, tgt, dmg in self.battle_stats["torpedo_hits"]:
+                if cn:
+                    lines.append(f"      {tgt}  ({dmg}损伤)")
+                else:
+                    lines.append(f"      {tgt}  ({dmg} damage)")
+
+        if self.battle_stats["near_misses"]:
+            has_events = True
+            total_nm = sum(sum(v.values()) for v in self.battle_stats["near_misses"].values())
+            if cn:
+                lines.append(f"    🌊 近失弹：{total_nm}次")
+            else:
+                lines.append(f"    🌊 NEAR MISSES: {total_nm}")
+
+        if self.battle_stats["fire_events"]:
+            has_events = True
+            ships_on_fire = set(self.battle_stats["fire_events"])
+            if cn:
+                lines.append(f"    🔥 起火舰船：{', '.join(ships_on_fire)}")
+            else:
+                lines.append(f"    🔥 FIRES: {', '.join(ships_on_fire)}")
+
+        if not has_events:
+            lines.append("    " + ("无特殊事件。" if cn else "No special events."))
+
+        lines.append("")
+        lines.append(sep)
+
+        return lines
 
     def show_briefing(self):
         iowa_s = self.get_ship("iowa")
@@ -686,6 +944,17 @@ class Game(bt.Battle):
                 print("\n  [!] WARNING: Type93 oxygen torpedoes — near-invisible, 40km range")
                 print("      ~500kg warhead. No auto-warning.")
         print("=" * 66)
+
+
+# Helper for HP bar
+
+def _hp_bar(pct, cn, width=16):
+    """Return a simple HP bar string."""
+    filled = max(0, min(width, int(pct / 100 * width)))
+    empty = width - filled
+    if cn:
+        return "█" * filled + "░" * empty
+    return "█" * filled + "░" * empty
 
 
 # ============================================================
@@ -923,40 +1192,8 @@ if __name__ == "__main__":
             print(t("victory", cn))
             break
 
-    # === SUMMARY ===
-    sodak = game.get_ship("south_dakota")
-    print(f"\n{'='*66}")
-    if cn:
-        print("  战 役 总 结")
-    else:
-        print("  BATTLE SUMMARY")
-    print(f"{'='*66}")
-
-    total_t = len(summary_log)
-    final_t = summary_log[-1]["time"] if summary_log else 0
-    jp_sunk = jp_initial - len(game.active_ships("JP"))
-    us_sunk = 1 if p.get("sunk", False) else 0
-
-    if cn:
-        print(f"  战斗：{total_t}回合（{final_t}分钟）")
-        print(f"  日军沉没：{jp_sunk}/{jp_initial}  美军沉没：{us_sunk}/2")
-        print(f"  依阿华号：{'沉没' if p.get('sunk') else '可航行'}")
-        if sodak:
-            print(f"  南达科他号：{'沉没' if sodak.get('sunk') else '可航行'}")
-        survivors = game.active_ships("JP")
-        if survivors:
-            print(f"\n  日军残余：")
-            for e in survivors:
-                print(f"    {e['name']}")
-    else:
-        print(f"  Duration: {total_t} turns ({final_t}min)")
-        print(f"  JP lost: {jp_sunk}/{jp_initial}  US lost: {us_sunk}/2")
-        print(f"  Iowa: {'SUNK' if p.get('sunk') else 'Afloat'}")
-        if sodak:
-            print(f"  SoDak: {'SUNK' if sodak.get('sunk') else 'Afloat'}")
-        survivors = game.active_ships("JP")
-        if survivors:
-            print(f"\n  JP survivors:")
-            for e in survivors:
-                print(f"    {e['name']}")
-    print(f"{'='*66}")
+    # === AFTER ACTION REPORT ===
+    game.cn = cn
+    aar = game.after_action_report()
+    for l in aar:
+        print(l)
